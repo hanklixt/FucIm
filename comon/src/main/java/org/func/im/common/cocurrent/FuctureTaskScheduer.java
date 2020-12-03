@@ -13,7 +13,7 @@ public class FuctureTaskScheduer  extends Thread{
 
 
 
-     private  ConcurrentLinkedQueue concurrentLinkedQueue=    new ConcurrentLinkedQueue<>();
+     private  ConcurrentLinkedQueue taskQueue=    new ConcurrentLinkedQueue<>();
 
 
 
