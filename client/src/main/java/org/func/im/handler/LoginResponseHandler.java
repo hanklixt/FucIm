@@ -50,8 +50,7 @@ public class LoginResponseHandler extends ChannelInboundHandlerAdapter {
             //登录成功移除当前处理器
             pipeline.remove(this);
 
-
-            //在流水线业务处理器最后面加入心跳处理器
+            //在已存在的名叫encoder的业务处理器后面加上一个名叫heartBeat的业务处理器
             pipeline.addAfter("encoder","heartBeat",new HeartBeatClientHandler());
 
 

@@ -12,12 +12,12 @@ public class ProtoInstant {
     /**
      * 魔数--可以通过配置进行读取
      */
-    private static final short MAGIC_CODE=0x86;
+    public static final short MAGIC_CODE=0x86;
 
     /**
      * 版本号
      */
-    private static final short VERSION_CODE=0X01;
+    public static final short VERSION_CODE=0X01;
 
 
     /**
