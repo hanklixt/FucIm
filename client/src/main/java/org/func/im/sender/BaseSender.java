@@ -71,11 +71,11 @@ public abstract class BaseSender {
     }
 
     public void sendSucced(ProtoMsg.Message message){
-        log.info("发送成功");
+        log.info("发送成功:"+message);
     }
 
     public void sendFailed(ProtoMsg.Message message){
-        log.info("发送失败");
+        log.info("发送失败:"+message);
     }
 
 

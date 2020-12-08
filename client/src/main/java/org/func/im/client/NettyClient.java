@@ -32,11 +32,11 @@ import org.springframework.stereotype.Service;
 @Service("nettyClient")
 public class NettyClient {
 
-    @Value("{server.host}")
+    @Value("${server.remoteHost}")
     private String host;
 
-    @Value("{server.port}")
-    private Integer port;
+    @Value("${server.remotePort}")
+    private String port;
 
 
     @Autowired
@@ -49,7 +49,7 @@ public class NettyClient {
     private LoginResponseHandler loginResponseHandler;
 
     //连接成功的监听器，通过setter来设置
-    private GenericFutureListener<Future<? super Void>> genericFutureListener;
+    private GenericFutureListener<ChannelFuture> connectFutureListener;
 
 
     private Channel channel;
@@ -72,6 +72,10 @@ public class NettyClient {
      */
     public void  doConnect() {
 
+        log.info("准备开始连接服务端");
+        log.info(host);
+        log.info(port);
+
         try{
             bootstrap=new Bootstrap();
 
@@ -79,7 +83,7 @@ public class NettyClient {
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE,true);
             bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
-            bootstrap.remoteAddress(host,port);
+            bootstrap.remoteAddress(host,Integer.parseInt(port));
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -94,11 +98,12 @@ public class NettyClient {
                 }
             });
             log.info("开始连接服务端了");
-            ChannelFuture connect = bootstrap.connect().sync();
-            connect.addListener(genericFutureListener);
+            ChannelFuture connect = bootstrap.connect();
+            connect.addListener(connectFutureListener);
 
 //            ChannelFuture sync = connect.channel().closeFuture().sync();
         }catch (Exception e){
+            e.printStackTrace();
             log.error("连接失败");
         }finally {
               g.shutdownGracefully();

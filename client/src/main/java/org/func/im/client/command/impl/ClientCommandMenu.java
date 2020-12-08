@@ -16,7 +16,7 @@ import java.util.Scanner;
 @Service("clientCommandMenu")
 public class ClientCommandMenu implements BaseCommand {
 
-    private static final String Key="0";
+    public static final String KEY="0";
 
 
     private String allCommandsShow;
@@ -30,9 +30,10 @@ public class ClientCommandMenu implements BaseCommand {
         inputCommand = scanner.next();
     }
 
+
     @Override
     public String getKey() {
-        return Key;
+        return KEY;
     }
 
 

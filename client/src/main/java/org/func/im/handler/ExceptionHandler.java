@@ -5,7 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.func.im.client.ClientSession;
+import org.func.im.client.NettyClient;
 import org.func.im.common.bean.exception.InvalidFrameException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 @ChannelHandler.Sharable
 @Service("exceptionHandler")
 public class ExceptionHandler extends ChannelInboundHandlerAdapter {
+
+    @Autowired
+    private NettyClient nettyClient;
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -28,7 +33,8 @@ public class ExceptionHandler extends ChannelInboundHandlerAdapter {
             ctx.close();
             log.error(cause.getMessage());
 
-            //todo 准备开始重连
+            // 准备开始重连
+            nettyClient.doConnect();
 
 
         }

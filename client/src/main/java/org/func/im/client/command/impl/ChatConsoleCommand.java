@@ -21,7 +21,7 @@ public class ChatConsoleCommand implements BaseCommand {
 
     private String message;
 
-    private static final String KEY="2";
+    public static final String KEY="2";
 
 
     @Override

@@ -41,8 +41,8 @@ public class HeartBeatClientHandler extends ChannelInboundHandlerAdapter {
             @Override
             public void run() {
                 if (ctx.channel().isActive()){
-//                    ctx.channel().writeAndFlush(message);
-                    //两个write flush 有区别。ctx writeAndFlush 直接从当前业务处理器写数据 然后发送
+//                    ctx.channel().writeAndFlush(message);      //发送到尾部
+                    //两个write flush 有区别。ctx writeAndFlush 发到下一站--
                     ctx.writeAndFlush(message);
 //                    heartBeat(ctx,message);
                 }
