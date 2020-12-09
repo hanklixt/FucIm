@@ -36,7 +36,7 @@ public class NettyClient {
     private String host;
 
     @Value("${server.remotePort}")
-    private String port;
+    private Integer port;
 
 
     @Autowired
@@ -64,7 +64,7 @@ public class NettyClient {
     private EventLoopGroup g;
 
     public NettyClient() {
-        this.g = new NioEventLoopGroup();
+        this.g = new NioEventLoopGroup(1);
     }
 
     /**
@@ -73,8 +73,11 @@ public class NettyClient {
     public void  doConnect() {
 
         log.info("准备开始连接服务端");
-        log.info(host);
-        log.info(port);
+        log.info("remoteHost:{},remotePort:{}", host,port);
+
+        if (this.g==null){
+            g=new NioEventLoopGroup();
+        }
 
         try{
             bootstrap=new Bootstrap();
@@ -83,7 +86,7 @@ public class NettyClient {
             bootstrap.channel(NioSocketChannel.class);
             bootstrap.option(ChannelOption.SO_KEEPALIVE,true);
             bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
-            bootstrap.remoteAddress(host,Integer.parseInt(port));
+            bootstrap.remoteAddress(host,port);
 
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
@@ -105,13 +108,17 @@ public class NettyClient {
         }catch (Exception e){
             e.printStackTrace();
             log.error("连接失败");
-        }finally {
-              g.shutdownGracefully();
         }
 
     }
 
 
+    /**
+     * 不能关掉eventGroup--
+     */
+    public void  close(){
+        g.shutdownGracefully();
+    }
 
 
 

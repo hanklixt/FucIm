@@ -3,7 +3,9 @@ package org.func.im.client;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoop;
+import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.ScheduledFuture;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +78,8 @@ public class CommandController {
     //菜单字符
     private String menuString;
 
+    private boolean isConnected=false;
+
     //连接状态
     private boolean connectFlag=false;
 
@@ -106,11 +110,12 @@ public class CommandController {
     };
 
 
-    //连接成功的回调监听器
-    GenericFutureListener<ChannelFuture> connectFutureListener=new GenericFutureListener<ChannelFuture>() {
+    //连接服务端的回调监听器
+    GenericFutureListener<ChannelFuture> connectFutureListener= new GenericFutureListener<ChannelFuture>() {
         @Override
         public void operationComplete(ChannelFuture cf) throws Exception {
             EventLoop eventLoop = cf.channel().eventLoop();
+            System.out.println("eventLoop"+eventLoop);
             if (cf.isSuccess()){
                 connectFlag=true;
                 channel = cf.channel();
@@ -122,15 +127,15 @@ public class CommandController {
                 channel.closeFuture().addListener(closeFutureListener);
 
                 connectFlag=true;
+                notifyCommandThread();
             }else {
-                connectFlag=false;
                 log.info("连接失败,将在10s后重新连接");
-                eventLoop.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        nettyClient.doConnect();
-                    }
-                },10, TimeUnit.SECONDS);
+                 eventLoop.schedule(() -> {
+                    System.out.println("执行重连任务");
+                    nettyClient.doConnect();}, 10, TimeUnit.SECONDS);
+
+                connectFlag=false;
+
             }
 
         }
