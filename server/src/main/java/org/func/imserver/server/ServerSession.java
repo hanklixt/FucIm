@@ -25,7 +25,6 @@ public class ServerSession {
 
     private final static AttributeKey<ServerSession> SESSION_KEY=AttributeKey.valueOf("session_key");
 
-
     private Channel channel;
 
     private User user;
@@ -61,19 +60,19 @@ public class ServerSession {
         return channel.attr(ServerSession.SESSION_KEY).get();
     }
 
-
     //设置用户
     public void setUser(User user){
         this.user=user;
         user.setSessionId(sessionId);
     }
 
+    public boolean isValid(){
+       return getUser()!=null;
+    }
 
     public User getUser(){
         return user;
     }
-
-
 
 
 
